@@ -33,7 +33,6 @@ def create_acess_token(user: User):
         "is_active": user.is_active,
         "exp": int(expire.timestamp())
     }
-    print(payload)
     token = jwt.encode(payload, SECRET, algorithm=ALGORITHM)
     return token
 
