@@ -30,6 +30,7 @@ def create_acess_token(user: User):
         "sub": sub,
         "username": user.name,
         "role": user.role.value,
+        "is_active": user.is_active,
         "exp": int(expire.timestamp())
     }
     print(payload)
