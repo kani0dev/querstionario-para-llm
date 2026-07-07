@@ -11,7 +11,7 @@ from src.domain.user.Role import user_role
 
 class teacher_service:
     def get_all(self, session: Session) -> list[Teacher]:
-        return session.query(Teacher).all()
+        return session.query(Teacher).filter(User.role == user_role.TEACHER).all()
 
     def get_by_id(self, teacher_id: str, session: Session) -> Teacher:
         select_by_id_query = select(Teacher).where(Teacher.teacher_uuid == teacher_id)
