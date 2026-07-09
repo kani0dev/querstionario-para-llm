@@ -1,6 +1,7 @@
 from sqlalchemy.orm import Session
 from src.domain.user.User import User
 from src.domain.user.Student import Student
+from src.domain.user.Teacher import Teacher
 from src.domain.user.Role import user_role
 from src.infra.security.securitModel import user_credentials
 from src.infra.security.securityConfig import password_encoder
@@ -62,6 +63,28 @@ class securityService:
         self.session.add(creds)
         self.session.commit()
         token = token_service.create_acess_token(new_user)        
+
+        return token
+
+    def signup_teacher(self, username: str, password: str) -> str:
+        user = self.get_by_username(username)
+        if user:
+            raise ValueError("usuário já existe")
+
+        new_user = Teacher(name=username)
+        self.session.add(new_user)
+        self.session.flush()
+        hashed = password_encoder.hash_password(password)
+
+        creds = user_credentials(
+            user_id=new_user.id,
+            password=hashed,
+            last_password_change=datetime(1970, 1, 1, tzinfo=timezone.utc),
+            fail_attempts=0,
+        )
+        self.session.add(creds)
+        self.session.commit()
+        token = token_service.create_acess_token(new_user)
 
         return token
     

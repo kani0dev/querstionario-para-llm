@@ -1,16 +1,10 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
-from sqlalchemy import select
 from pydantic import BaseModel
-from jwt import PyJWTError
 from src.infra.db.session import get_session
 from src.infra.security.securityService import securityService
-from src.infra.security.token.token_service import create_acess_token, decode_token
-from src.domain.user.Student import Student
-from src.domain.user.Teacher import Teacher
-from src.domain.user.Role import user_role
-from src.app.controller.request.validate_request import validate_request
-from src.app.controller.response.validate_response import validate_response
+from src.infra.security.token.token_service import create_acess_token
+from src.infra.wordle.wordle_service import get_daily_word
 
 
 class Request(BaseModel):
@@ -18,8 +12,27 @@ class Request(BaseModel):
     password: str
 
 
-
 router = APIRouter(prefix="/auth", tags=["auth"])
+
+
+@router.post("/signup/teacher", status_code=201)
+def signup_teacher(
+    payload: Request,
+    secret_word: str,
+    session: Session = Depends(get_session),
+):
+    daily_word = get_daily_word()
+    if daily_word is None:
+        raise HTTPException(503, "não foi possível validar a palavra mágica")
+    if secret_word.lower() != daily_word.lower():
+        raise HTTPException(403, "palavra mágica inválida")
+
+    service = securityService(session)
+    try:
+        token = service.signup_teacher(payload.username, payload.password)
+        return {"access_token": token, "token_type": "bearer"}
+    except ValueError as e:
+        raise HTTPException(409, str(e))
 
 
 @router.post("/signup", status_code=201)
@@ -27,10 +40,7 @@ def signup(payload: Request, session: Session = Depends(get_session)):
     service = securityService(session)
     try:
         token = service.singup(payload.username, payload.password)
-        return {
-            "access_token": token,
-            "token_type": "bearer",
-        }
+        return {"access_token": token, "token_type": "bearer"}
     except ValueError as e:
         raise HTTPException(409, str(e))
 
@@ -40,56 +50,8 @@ def login(payload: Request, session: Session = Depends(get_session)):
     service = securityService(session)
     user = service.authenticate(payload.username, payload.password)
     if not user:
-        raise HTTPException(
-            status_code=401,
-            detail="usuário ou senha inválidos"
-        )
+        raise HTTPException(status_code=401, detail="usuário ou senha inválidos")
 
     token = create_acess_token(user)
 
-    return {
-        "access_token": token,
-        "token_type": "bearer",
-    }
-
-
-@router.post("/validade")
-def validade(payload: validate_request, session: Session = Depends(get_session)):
-    try:
-        payload_data = decode_token(payload.token)
-    except PyJWTError:
-        raise HTTPException(401, "invalid token")
-
-    sub = payload_data.get("sub")
-    role_value = payload_data.get("role")
-
-    if not sub or not role_value:
-        raise HTTPException(401, "invalid token")
-
-    try:
-        role = user_role(role_value)
-    except ValueError:
-        raise HTTPException(401, "invalid token")
-
-    model_class = Teacher if role == user_role.TEACHER else Student
-    uuid_column = Teacher.teacher_uuid if role == user_role.TEACHER else Student.student_uuid
-
-    stmt = select(model_class).where(uuid_column == sub)
-    user = session.execute(stmt).scalar_one_or_none()
-
-    if not user:
-        raise HTTPException(401, "user not found")
-
-    if not user.is_active:
-        raise HTTPException(401, "user is deactivated")
-
-    if payload.required_role is not None and role_value != payload.required_role:
-        raise HTTPException(403, "insufficient permissions")
-
-    return validate_response(
-        valid=True,
-        sub=sub,
-        username=user.name,
-        role=role_value,
-        is_active=user.is_active,
-    )
+    return {"access_token": token, "token_type": "bearer"}
