@@ -20,4 +20,5 @@ class User(Base):
 
     __mapper_args__ = {
         "polymorphic_on": "role",
+        "polymorphic_identity": user_role.ADMIN
     }
