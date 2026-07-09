@@ -62,7 +62,29 @@ class securityService:
         )
         self.session.add(creds)
         self.session.commit()
-        token = token_service.create_acess_token(new_user)        
+        token = token_service.create_acess_token(new_user)
+
+        return token
+
+    def create_teacher(self, name: str, password: str) -> str:
+        user = self.get_by_username(name)
+        if user:
+            raise ValueError("usuário já existe")
+
+        new_teacher = Teacher(name=name)
+        self.session.add(new_teacher)
+        self.session.flush()
+        hashed = password_encoder.hash_password(password)
+
+        creds = user_credentials(
+            user_id=new_teacher.id,
+            password=hashed,
+            last_password_change=datetime(1970, 1, 1, tzinfo=timezone.utc),
+            fail_attempts=0,
+        )
+        self.session.add(creds)
+        self.session.commit()
+        token = token_service.create_acess_token(new_teacher)
 
         return token
 
