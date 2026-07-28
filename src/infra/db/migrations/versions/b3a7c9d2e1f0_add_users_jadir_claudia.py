@@ -5,7 +5,7 @@ Adiciona dois usuários iniciais:
 - claudia (teacher) com senha '123'
 
 Revision ID: b3a7c9d2e1f0
-Revises: 0eac05fa1e24
+Revises: abc123def456
 Create Date: 2026-07-16 12:00:00.000000
 
 """
@@ -19,7 +19,7 @@ from argon2 import PasswordHasher
 
 # revision identifiers, used by Alembic.
 revision: str = 'b3a7c9d2e1f0'
-down_revision: Union[str, Sequence[str], None] = '0eac05fa1e24'
+down_revision: Union[str, Sequence[str], None] = 'abc123def456'
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
