@@ -6,26 +6,22 @@ from sqlalchemy.orm import DeclarativeBase
 
 load_dotenv()
 
-DB_USER = os.getenv("DB_USER", "quiz2llm")
-DB_PASS = os.getenv("DB_PASS", "quiz2llm_pass")
-HOST = os.getenv("HOST", "localhost")
-DB_PORT = os.getenv("DB_PORT", "3306")
-DB_NAME = os.getenv("DB_NAME", "quiz2llm")
+DATABASE_URL = os.getenv("DATABASE_URL")
 
 
 def get_database_url():
-    explicit = os.getenv("DATABASE_URL")
-    if explicit:
-        return explicit
-    return f"mysql+pymysql://{DB_USER}:{DB_PASS}@{HOST}:{DB_PORT}/{DB_NAME}"
+    return DATABASE_URL
 
-print(get_database_url())
+
 def get_conection():
+    if not get_database_url():
+        print("DATABASE_URL não definida. Nenhuma conexão será realizada.")
+        return None
     try:
         engine = create_engine(get_database_url())
         return engine
     except Exception as e:
-        print('erro ao conectar ao servido \n', e)
+        print('erro ao conectar ao servidor \n', e)
         return e
 
 

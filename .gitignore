@@ -2,3 +2,6 @@
 .env
 !README.md
 **.vscode
+
+.pytest_cache
+.ruff_cache
