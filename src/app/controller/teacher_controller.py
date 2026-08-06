@@ -1,16 +1,14 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from src.app.controller.request.teacher_request import create_teacher_request
+from src.app.controller.response.teacher_response import teacher_response
+from src.app.service.teacher_service import teacher_service
+from src.domain.user.Role import user_role
+from src.domain.user.User import User
 from src.infra.db.session import get_session
 from src.infra.security.auth_dependency import require_role
 from src.infra.security.securityService import securityService
-from src.domain.user.Role import user_role
-from src.domain.user.User import User
-
-from src.app.service.teacher_service import teacher_service
-from src.app.controller.response.teacher_response import teacher_response
-from src.app.controller.request.teacher_request import create_teacher_request
-
 
 router = APIRouter(prefix='/teacher', tags=['teacher'])
 service = teacher_service()

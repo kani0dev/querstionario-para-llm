@@ -1,9 +1,9 @@
-from sqlalchemy.orm import Session
 from sqlalchemy import select
-from src.app.controller.request.student_request import update_student
+from sqlalchemy.orm import Session
+
+from src.domain.user.Role import user_role
 from src.domain.user.Student import Student
 from src.domain.user.User import User
-from src.domain.user.Role import user_role
 
 
 class student_service:

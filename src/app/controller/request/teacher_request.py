@@ -1,9 +1,9 @@
+
 from pydantic import BaseModel
-from typing import Optional
 
 
 class update_teacher(BaseModel):
-    name: Optional[str] = None
+    name: str | None = None
 
 
 class create_teacher_request(BaseModel):

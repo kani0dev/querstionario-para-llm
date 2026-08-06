@@ -1,12 +1,12 @@
 import os
-from datetime import datetime, timezone, timedelta
+from datetime import UTC, datetime, timedelta
+
+import jwt
 from dotenv import load_dotenv
 
-from sqlalchemy.util import to_list
-from src.domain.user.User import User
 from src.domain.user.Student import Student
 from src.domain.user.Teacher import Teacher
-import jwt
+from src.domain.user.User import User
 
 load_dotenv()
 
@@ -16,9 +16,9 @@ TOKEN_EXPIRE_MINUTES = int(os.getenv('JWT_EXPIRE', '30'))
 
 
 def create_acess_token(user: User):
-    expire = datetime.now(timezone.utc) + timedelta(minutes=TOKEN_EXPIRE_MINUTES)
-    
-    
+    expire = datetime.now(UTC) + timedelta(minutes=TOKEN_EXPIRE_MINUTES)
+
+
     if isinstance(user, Student):
         sub = user.student_uuid
     elif isinstance(user, Teacher):

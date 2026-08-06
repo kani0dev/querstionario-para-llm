@@ -1,4 +1,5 @@
 from sqlalchemy.orm import sessionmaker
+
 from src.infra.db.db import get_conection
 
 engine = get_conection()

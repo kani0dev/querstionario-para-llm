@@ -1,5 +1,6 @@
-import httpx
 from datetime import date
+
+import httpx
 
 _word_cache: str | None = None
 _cache_date: date | None = None

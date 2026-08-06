@@ -1,13 +1,13 @@
+from datetime import UTC, datetime
+
 from sqlalchemy.orm import Session
-from src.domain.user.User import User
+
 from src.domain.user.Student import Student
 from src.domain.user.Teacher import Teacher
-from src.domain.user.Role import user_role
+from src.domain.user.User import User
 from src.infra.security.securitModel import user_credentials
 from src.infra.security.securityConfig import password_encoder
 from src.infra.security.token import token_service
-
-from datetime import datetime, timezone
 
 
 class securityService:
@@ -57,7 +57,7 @@ class securityService:
         creds = user_credentials(
             user_id=new_user.id,
             password=hashed,
-            last_password_change=datetime(1970,1,1,  tzinfo=timezone.utc),
+            last_password_change=datetime(1970,1,1,  tzinfo=UTC),
             fail_attempts=0,
         )
         self.session.add(creds)
@@ -79,7 +79,7 @@ class securityService:
         creds = user_credentials(
             user_id=new_teacher.id,
             password=hashed,
-            last_password_change=datetime(1970, 1, 1, tzinfo=timezone.utc),
+            last_password_change=datetime(1970, 1, 1, tzinfo=UTC),
             fail_attempts=0,
         )
         self.session.add(creds)
@@ -101,7 +101,7 @@ class securityService:
         creds = user_credentials(
             user_id=new_user.id,
             password=hashed,
-            last_password_change=datetime(1970, 1, 1, tzinfo=timezone.utc),
+            last_password_change=datetime(1970, 1, 1, tzinfo=UTC),
             fail_attempts=0,
         )
         self.session.add(creds)
@@ -109,4 +109,3 @@ class securityService:
         token = token_service.create_acess_token(new_user)
 
         return token
-    

@@ -1,12 +1,10 @@
-from sqlalchemy.orm import Session
-from sqlalchemy import select, insert
-import uuid
 
-from src.app.controller.request.teacher_request import update_teacher
-from src.domain.user.User import User
-from src.domain.user.Teacher import Teacher
-from src.domain.user.Student import Student
+from sqlalchemy import select
+from sqlalchemy.orm import Session
+
 from src.domain.user.Role import user_role
+from src.domain.user.Teacher import Teacher
+from src.domain.user.User import User
 
 
 class teacher_service:

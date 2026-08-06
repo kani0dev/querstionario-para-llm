@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.orm import Session
 from pydantic import BaseModel
+from sqlalchemy.orm import Session
+
 from src.infra.db.session import get_session
 from src.infra.security.securityService import securityService
 from src.infra.security.token.token_service import create_acess_token

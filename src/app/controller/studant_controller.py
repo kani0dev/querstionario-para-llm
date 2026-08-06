@@ -1,12 +1,11 @@
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.orm import Session
 
+from src.app.controller.response.student_response import student_response
+from src.app.service.student_service import student_service
+from src.domain.user.User import User
 from src.infra.db.session import get_session
 from src.infra.security.auth_dependency import get_current_user
-from src.domain.user.User import User
-
-from src.app.service.student_service import student_service
-from src.app.controller.response.student_response import student_response
 
 router = APIRouter(prefix='/student', tags=['student'])
 service = student_service()

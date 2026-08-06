@@ -9,19 +9,17 @@ Revises: abc123def456
 Create Date: 2026-07-16 12:00:00.000000
 
 """
-from typing import Sequence, Union
+from collections.abc import Sequence
 
-from alembic import op
-import sqlalchemy as sa
 import uuid_utils as uuid
+from alembic import op
 from argon2 import PasswordHasher
-
 
 # revision identifiers, used by Alembic.
 revision: str = 'b3a7c9d2e1f0'
-down_revision: Union[str, Sequence[str], None] = 'abc123def456'
-branch_labels: Union[str, Sequence[str], None] = None
-depends_on: Union[str, Sequence[str], None] = None
+down_revision: str | Sequence[str] | None = 'abc123def456'
+branch_labels: str | Sequence[str] | None = None
+depends_on: str | Sequence[str] | None = None
 
 ph = PasswordHasher()
 
@@ -31,13 +29,13 @@ def upgrade() -> None:
     teacher_uuid = str(uuid.uuid7())
     hashed_password = ph.hash("123")
 
-    op.execute(f"""
+    op.execute("""
         INSERT INTO users (name, role, is_active, create_at)
         VALUES ('jadir', 'STUDENT', 1, NOW())
     """)
     op.execute("SET @student_id = LAST_INSERT_ID()")
 
-    op.execute(f"""
+    op.execute("""
         INSERT INTO users (name, role, is_active, create_at)
         VALUES ('claudia', 'TEACHER', 1, NOW())
     """)

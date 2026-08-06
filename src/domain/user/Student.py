@@ -1,8 +1,9 @@
-from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import String, ForeignKey
-from .User import User
-from .Role import user_role
 import uuid_utils as uuid
+from sqlalchemy import ForeignKey, String
+from sqlalchemy.orm import Mapped, mapped_column
+
+from .Role import user_role
+from .User import User
 
 
 class Student(User):

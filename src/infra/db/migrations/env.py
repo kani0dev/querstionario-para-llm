@@ -1,10 +1,7 @@
 from logging.config import fileConfig
 
-from sqlalchemy import create_engine
-from sqlalchemy import pool
-
 from alembic import context
-
+from sqlalchemy import create_engine, pool
 
 # this is the Alembic Config object, which provides
 # access to the values within the .ini file in use.
@@ -21,13 +18,15 @@ if config.config_file_name is not None:
 # target_metadata = mymodel.Base.metadata
 import sys
 from pathlib import Path
+
 sys.path.append(str(Path(__file__).parents[4]))
 
-from src.infra.db.db import Base
-import src.domain.user.User          # noqa
-import src.domain.user.Student       # noqa
-import src.domain.user.Teacher       # noqa
+import src.domain.user.Student  # noqa
+import src.domain.user.Teacher  # noqa
+import src.domain.user.User  # noqa
 import src.infra.security.securitModel  # noqa
+from src.infra.db.db import Base
+
 target_metadata = Base.metadata
 
 # other values from the config, defined by the needs of env.py,
@@ -51,9 +50,9 @@ def run_migrations_offline() -> None:
 
     from dotenv import load_dotenv
     load_dotenv()
-    from os import getenv
+    from src.infra.db.db import get_database_url
 
-    url = config.get_main_option("sqlalchemy.url",f"mysql+pymysql://{getenv('DB_USER','quiz2llm')}:{getenv('DB_PASS','quiz2llm_pass')}@{getenv('HOST','localhost')}:{getenv('DB_PORT','3306')}/{getenv('DB_NAME','quiz2llm')}")
+    url = config.get_main_option("sqlalchemy.url", get_database_url())
     context.configure(
         url=url,
         target_metadata=target_metadata,
@@ -68,9 +67,9 @@ def run_migrations_offline() -> None:
 def run_migrations_online() -> None:
     from dotenv import load_dotenv
     load_dotenv()
-    from os import getenv
+    from src.infra.db.db import get_database_url
 
-    url = f"mysql+pymysql://{getenv('DB_USER','quiz2llm')}:{getenv('DB_PASS','quiz2llm_pass')}@{getenv('HOST','localhost')}:{getenv('DB_PORT','3306')}/{getenv('DB_NAME','quiz2llm')}"
+    url = get_database_url()
     connectable = create_engine(url, poolclass=pool.NullPool)
 
     with connectable.connect() as connection:

@@ -1,15 +1,15 @@
 from fastapi import Depends, HTTPException
-from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
-from sqlalchemy.orm import Session
-from sqlalchemy import select
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 from jwt import PyJWTError
+from sqlalchemy import select
+from sqlalchemy.orm import Session
 
-from src.infra.db.session import get_session
-from src.infra.security.token.token_service import decode_token
-from src.domain.user.User import User
+from src.domain.user.Role import user_role
 from src.domain.user.Student import Student
 from src.domain.user.Teacher import Teacher
-from src.domain.user.Role import user_role
+from src.domain.user.User import User
+from src.infra.db.session import get_session
+from src.infra.security.token.token_service import decode_token
 
 security = HTTPBearer()
 

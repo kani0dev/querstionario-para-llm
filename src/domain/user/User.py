@@ -1,7 +1,10 @@
-from src.infra.db.db import Base
 from datetime import datetime
+
+from sqlalchemy import Boolean, DateTime, Enum, Integer, String
 from sqlalchemy.orm import Mapped, mapped_column
-from sqlalchemy import Integer, String, DateTime, Enum, Boolean
+
+from src.infra.db.db import Base
+
 from .Role import user_role
 
 
